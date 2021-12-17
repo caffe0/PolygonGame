@@ -13,10 +13,7 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private float gravity;
     [SerializeField] private float jumpHeight;
-    
-    public float turnSmoothVelocity;
-    private float turnSmoothTime = 0.1f;
-    public Transform cam;
+   
 
 
 
@@ -45,7 +42,6 @@ public class Player : MonoBehaviour
         }
 
         float moveZ = Input.GetAxis("Vertical");
-        
         float moveX = Input.GetAxis("Horizontal");
 
         moveDir = new Vector3(moveX, 0, moveZ);
@@ -68,25 +64,13 @@ public class Player : MonoBehaviour
             {
                 Jump();
             }
-
-            controller.Move(moveDir * Time.deltaTime);
-
-            velocity.y += gravity * Time.deltaTime;
-            controller.Move(velocity * Time.deltaTime);
-
-
-
-            Vector3 direction = new Vector3(moveX, 0f, moveZ).normalized;
-            if (direction.magnitude >= 0.1f)
-            {
-                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
-                float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-                transform.rotation = Quaternion.Euler(0f, angle, 0f);
-                Vector3 camDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-                controller.Move(camDir.normalized * moveSpeed * Time.deltaTime);
-
-            }
+            moveDir *= moveSpeed;
         }
+
+        controller.Move(moveDir * Time.deltaTime);
+
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
     }
 
 
